@@ -1,0 +1,199 @@
+* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #e0eaf4 0%, #cfdef3 100%);
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+
+    /* main card container */
+    .translator-card {
+      max-width: 1300px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(2px);
+      border-radius: 2rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.35), 0 4px 12px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    /* header */
+    .app-header {
+      background: #1e2a3e;
+      padding: 1.2rem 2rem;
+      text-align: center;
+    }
+    .app-header h1 {
+      color: #f0f3f8;
+      font-weight: 600;
+      font-size: 1.7rem;
+      letter-spacing: -0.2px;
+    }
+    .app-header p {
+      color: #b9c7d9;
+      font-size: 0.85rem;
+      margin-top: 0.4rem;
+    }
+
+    /* two-panel row */
+    .translator-panels {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+    }
+
+    .panel {
+      flex: 1;
+      min-width: 260px;
+      padding: 1.8rem 1.8rem 2rem 1.8rem;
+      background: #ffffff;
+      transition: background 0.2s;
+    }
+
+    .left-panel {
+      background: #fefef7;
+      border-right: 1px solid #e2e8f0;
+    }
+
+    .right-panel {
+      background: #fafcf9;
+    }
+
+    .panel-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.2rem;
+      font-weight: 600;
+      color: #1f3a4b;
+      font-size: 1rem;
+      border-left: 4px solid #3b82f6;
+      padding-left: 0.8rem;
+    }
+    .panel-label span:first-child {
+      font-size: 1.3rem;
+    }
+
+    textarea {
+      width: 100%;
+      height: 240px;
+      padding: 1rem;
+      font-size: 1.1rem;
+      font-family: 'Segoe UI', system-ui, monospace;
+      border: 1px solid #cbd5e1;
+      border-radius: 1.2rem;
+      background: #fff;
+      resize: vertical;
+      outline: none;
+      transition: 0.2s;
+      line-height: 1.5;
+    }
+
+    textarea:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
+
+    .translation-output {
+      width: 100%;
+      min-height: 240px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 1.2rem;
+      padding: 1rem;
+      font-size: 1.1rem;
+      font-family: 'Segoe UI', system-ui, 'Noto Sans', sans-serif;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #0f172a;
+    }
+
+    .placeholder-muted {
+      color: #94a3b8;
+      font-style: italic;
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+      gap: 1rem;
+    }
+
+    .btn {
+      background: #1e293b;
+      border: none;
+      padding: 0.7rem 1.8rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: white;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .btn-primary {
+      background: #2563eb;
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: scale(0.98);
+      box-shadow: 0 4px 10px rgba(37,99,235,0.3);
+    }
+    .btn-secondary {
+      background: #334155;
+    }
+    .btn-secondary:hover {
+      background: #1e293b;
+    }
+    .btn-clear {
+      background: #475569;
+    }
+    .btn-clear:hover {
+      background: #334155;
+    }
+
+    .swap-icon {
+      font-size: 1.2rem;
+    }
+
+    .footnote {
+      background: #f1f5f9;
+      padding: 0.8rem 1.8rem;
+      font-size: 0.75rem;
+      color: #334155;
+      border-top: 1px solid #e2e8f0;
+      text-align: center;
+    }
+
+    @media (max-width: 720px) {
+      .panel {
+        padding: 1.2rem;
+      }
+      textarea, .translation-output {
+        height: 200px;
+      }
+      .btn {
+        padding: 0.5rem 1.2rem;
+      }
+      .left-panel {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+      }
+    }

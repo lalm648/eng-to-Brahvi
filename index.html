@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brahvi Translator | English to Brahvi</title>
+  <link rel="stylesheet" href="/index.css">
+  <script src="/script.js"></script>
+  
+</head>
+<body>
+
+<div class="translator-card">
+  <div class="app-header">
+    <h1>📖 English → Brahvi Translator</h1>
+    <p>Part-of-speech aware translation | JSON dictionary | Phrase assembly</p>
+  </div>
+
+  <div class="translator-panels">
+    <!-- LEFT: English input -->
+    <div class="panel left-panel">
+      <div class="panel-label">
+        <span>🇬🇧</span> <span>ENGLISH</span>
+      </div>
+      <textarea id="englishInput" placeholder="Type or paste English text here...&#10;Example: I eat fresh bread.&#10;She runs fast.&#10;Hello friend, how are you?"></textarea>
+      <div class="button-group">
+        <button class="btn btn-primary" id="translateBtn">✨ Translate</button>
+        <button class="btn btn-clear" id="clearBtn">🗑 Clear</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: Brahvi output -->
+    <div class="panel right-panel">
+      <div class="panel-label">
+        <span>🗣️</span> <span>BRAHVI (براوہی)</span>
+      </div>
+      <div id="brahviOutput" class="translation-output" aria-live="polite">
+        <span class="placeholder-muted">✨ Translation will appear here</span>
+      </div>
+      <div class="button-group">
+        <button class="btn btn-secondary" id="swapExampleBtn">🔄 Load Example</button>
+      </div>
+    </div>
+  </div>
+  <div class="footnote">
+    ⚡ Intelligent translation: POS-aware token lookup + basic Brahvi SOV assembly. Words not in dictionary appear [in brackets].
+  </div>
+</div>
+</body>
+</html>
