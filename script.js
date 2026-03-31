@@ -4,6 +4,8 @@
   //    For demo, we fill with transliterated Brahvi-like forms.
   //    Actual Brahvi script can be added later. Here we keep clean Latin/script neutral.
   // --------------------------------------------------------------
+  const sanitizeWord = (raw) => raw.toLowerCase().replace(/[^\w']/g, '');
+
   const dictionary = [
     // Pronouns
     { word: "i", pos: "pronoun", brahvi: "مان" },
@@ -30,7 +32,7 @@
     // Nouns
     { word: "bread", pos: "noun", brahvi: "نان" },
     { word: "water", pos: "noun", brahvi: "آب" },
-    { word: "milk", pos: "noun", brahvi: "شیر" },
+    { word: "milk", pos: "noun", brahvi: "پا__LAM_SVG__" },
     { word: "friend", pos: "noun", brahvi: "دوست" },
     { word: "house", pos: "noun", brahvi: "گِد" },
     { word: "man", pos: "noun", brahvi: "مرد" },
@@ -72,14 +74,63 @@
   const posLookup = new Map();    // word_lower+pos => brahvi
 
   dictionary.forEach(entry => {
-    const wordKey = entry.word.toLowerCase();
-    const posKey = `${wordKey}|${entry.pos}`;
+    const normalizedWord = sanitizeWord(entry.word);
+    if (!normalizedWord) return;
+    const posKey = `${normalizedWord}|${entry.pos}`;
     posLookup.set(posKey, entry.brahvi);
     // global fallback (keep first occurrence priority)
-    if (!globalLookup.has(wordKey)) {
-      globalLookup.set(wordKey, entry.brahvi);
+    if (!globalLookup.has(normalizedWord)) {
+      globalLookup.set(normalizedWord, entry.brahvi);
     }
   });
+
+  const phraseDictionary = [
+    { phrase: "hello friend", brahvi: "Ø³Ù„Ø§Ù… Ø¯ÙˆØ³Øª" },
+    { phrase: "thank you", brahvi: "Ù…ÛØ±Ø¨Ø§Ù†ÛŒ" },
+    { phrase: "how are you", brahvi: "Ú†ÙˆÙ† Ø¢ÛŒ" },
+    { phrase: "good morning", brahvi: "Ú†Ø§ Ø®ÙˆØ¨ Ø²Ù†" },
+    { phrase: "see you later", brahvi: "Ø¨Ù‡ Ø¨Ø§Ø¯ Ø¨ÛŒÙ†ÙŠ" },
+    { phrase: "i love you", brahvi: "Ù…ÛŒÙ† ØªÙˆ Ø±ÙˆÚ©Ø¨" },
+    { phrase: "what is your name", brahvi: "Ø§Ø³Ø§Ù… ØªÙˆ Ø§ÛŒØ´ Ø§ÛŒ" }
+  ];
+  const phraseMap = new Map();
+  let maxPhraseLength = 1;
+  phraseDictionary.forEach(entry => {
+    const normalizedWords = entry.phrase
+      .split(/\s+/)
+      .map(word => sanitizeWord(word))
+      .filter(Boolean);
+    if (normalizedWords.length < 2) return;
+    const key = normalizedWords.join(" ");
+    phraseMap.set(key, {
+      translation: entry.brahvi,
+      pos: entry.pos || "phrase",
+      phrase: entry.phrase,
+      length: normalizedWords.length
+    });
+    maxPhraseLength = Math.max(maxPhraseLength, normalizedWords.length);
+  });
+
+  const lamGlyphSVG = `<svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 858 1344" preserveAspectRatio="xMidYMid meet">
+    <g transform="translate(0,1344) scale(0.1,-0.1)" fill="currentColor" stroke="none">
+      <path d="M5624 13412 c-88 -65 -354 -329 -480 -477 -124 -146 -164 -206 -164 -245 0 -36 7 -43 188 -201 103 -90 246 -221 318 -291 164 -160 162 -160 284 -57 151 127 318 289 401 387 140 169 175 253 145 354 -33 114 -143 225 -441 446 -169 126 -186 131 -251 84z"/>
+      <path d="M6266 12241 c-62 -41 -320 -309 -475 -494 l-74 -88 -70 75 c-86 95 -177 170 -347 285 -125 85 -137 91 -184 91 l-51 0 -155 -157 c-162 -165 -334 -360 -464 -526 -64 -83 -76 -104 -76 -136 0 -36 5 -42 128 -143 143 -118 407 -355 492 -442 49 -50 59 -56 96 -56 37 0 55 10 160 89 229 172 412 354 490 487 l27 45 31 -28 c17 -16 72 -65 121 -109 50 -43 154 -139 231 -211 117 -110 147 -133 172 -133 22 0 55 19 123 71 348 266 523 470 559 655 25 126 -27 252 -157 380 -88 88 -253 216 -395 308 -97 62 -133 69 -182 37z"/>
+      <path d="M8371 11938 c-76 -188 -214 -546 -256 -670 -163 -474 -239 -926 -280 -1668 -3 -58 -46 -1131 -95 -2385 -116 -2950 -114 -2913 -186 -3415 -39 -274 -81 -420 -196 -680 -135 -306 -314 -568 -568 -833 -392 -410 -907 -671 -1530 -776 -464 -79 -1027 -39 -1400 99 -227 84 -405 195 -566 355 -251 248 -393 555 -450 976 -24 174 -24 555 0 744 56 447 190 932 400 1449 20 49 35 91 33 92 -6 6 -209 84 -218 84 -21 0 -227 -472 -347 -796 -265 -713 -400 -1387 -433 -2156 -23 -554 43 -922 235 -1313 111 -225 245 -403 420 -558 307 -270 630 -411 1081 -468 127 -17 528 -17 660 0 434 53 799 177 1155 391 689 413 1270 1141 1709 2141 332 756 586 1729 686 2624 37 337 47 558 95 2100 95 3107 133 3849 231 4515 11 74 22 142 25 151 3 12 -15 23 -79 48 -46 17 -85 31 -88 31 -2 0 -19 -37 -38 -82z"/>
+    </g>
+  </svg>`;
+  const glyphPlaceholders = {
+    "__LAM_SVG__": `<span class="inline-lam-glyph" aria-hidden="true">${lamGlyphSVG}</span>`
+  };
+
+  function applyGlyphPlaceholders(text) {
+    let updated = text;
+    Object.keys(glyphPlaceholders).forEach(key => {
+      const replacement = glyphPlaceholders[key];
+      const regex = new RegExp(key, "g");
+      updated = updated.replace(regex, replacement);
+    });
+    return updated;
+  }
 
   // simple rule-based POS tagging (basic heuristic for English)
   // returns best guessed POS for a given token (lowercased, punctuation stripped)
@@ -110,23 +161,39 @@
   // 2) else if global word match exists => use that
   // 3) else return null (to be bracketed)
   function translateWord(word, posHint = null) {
-    if (!word || word.trim() === "") return null;
-    const cleanWord = word.toLowerCase().replace(/[^\w']/g, ''); // remove punctuation but keep apostrophe
-    if (cleanWord === "") return null;
+    const cleanWord = sanitizeWord(word);
+    if (!cleanWord) return null;
     const pos = posHint || guessPartOfSpeech(cleanWord);
     const exactKey = `${cleanWord}|${pos}`;
     if (posLookup.has(exactKey)) {
       return posLookup.get(exactKey);
     }
-    // fallback to any POS match
     if (globalLookup.has(cleanWord)) {
       return globalLookup.get(cleanWord);
     }
-    // also try to remove trailing 's' for plural heuristic? optional but simple
     if (cleanWord.endsWith("s") && cleanWord.length > 1) {
       const singular = cleanWord.slice(0, -1);
       if (globalLookup.has(singular)) {
         return globalLookup.get(singular);
+      }
+    }
+    return null;
+  }
+
+  function findPhraseMatch(startIndex, tokenList) {
+    const maxCheck = Math.min(maxPhraseLength, tokenList.length - startIndex);
+    for (let len = maxCheck; len >= 2; len--) {
+      const segment = tokenList.slice(startIndex, startIndex + len);
+      const key = segment.map(entry => entry.normalized).join(" ");
+      if (phraseMap.has(key)) {
+        const match = phraseMap.get(key);
+        return {
+          length: len,
+          phrase: match.phrase,
+          translation: match.translation,
+          pos: match.pos,
+          raw: segment.map(entry => entry.original).join(" ")
+        };
       }
     }
     return null;
@@ -157,37 +224,37 @@
         continue;
       }
       
-      // tokenization: split by spaces and keep punctuation attached to words? we clean each token
-      const tokens = cleanSentence.split(/\s+/);
+      const rawTokens = cleanSentence.split(/\s+/).filter(token => token.trim() !== "");
+      const wordTokens = rawTokens
+        .map(token => {
+          const normalized = sanitizeWord(token);
+          return normalized ? { original: token, normalized } : null;
+        })
+        .filter(Boolean);
       const wordItems = [];
-      for (let token of tokens) {
-        // separate punctuation like commas, quotes etc but keep basic
-        const wordMatch = token.match(/^[a-zA-Z'’]+/);
-        let word = wordMatch ? wordMatch[0] : token;
-        let prefixPunct = "";
-        let suffixPunct = "";
-        if (!wordMatch) {
-          // pure punctuation
-          wordItems.push({ raw: token, word: null, punct: token, pos: null });
+      let tokenIndex = 0;
+      while (tokenIndex < wordTokens.length) {
+        const phraseMatch = findPhraseMatch(tokenIndex, wordTokens);
+        if (phraseMatch) {
+          wordItems.push({
+            raw: phraseMatch.raw,
+            word: phraseMatch.phrase,
+            translation: phraseMatch.translation,
+            pos: phraseMatch.pos
+          });
+          tokenIndex += phraseMatch.length;
           continue;
         }
-        // extract leading/trailing punctuation
-        const leadingMatch = token.match(/^[^\w']*/);
-        const trailingMatch = token.match(/[^\w']*$/);
-        prefixPunct = leadingMatch ? leadingMatch[0] : "";
-        suffixPunct = trailingMatch ? trailingMatch[0] : "";
-        word = token.substring(prefixPunct.length, token.length - suffixPunct.length);
-        if (word === "") continue;
-        const pos = guessPartOfSpeech(word);
-        const translation = translateWord(word, pos);
+        const currentToken = wordTokens[tokenIndex];
+        const pos = guessPartOfSpeech(currentToken.normalized);
+        const translation = translateWord(currentToken.normalized, pos);
         wordItems.push({
-          raw: token,
-          word: word.toLowerCase(),
-          translation: translation,
-          pos: pos,
-          prefixPunct: prefixPunct,
-          suffixPunct: suffixPunct
+          raw: currentToken.original,
+          word: currentToken.normalized,
+          translation,
+          pos
         });
+        tokenIndex++;
       }
       
       // separate items that are actual words (non-null translation candidate)
@@ -291,7 +358,7 @@
     if (!result || result.trim() === "") {
       document.getElementById("brahviOutput").innerHTML = '<span class="placeholder-muted">⚠️ Translation could not be assembled. Try simpler words.</span>';
     } else {
-      document.getElementById("brahviOutput").innerHTML = result;
+      document.getElementById("brahviOutput").innerHTML = applyGlyphPlaceholders(result);
     }
   }
   

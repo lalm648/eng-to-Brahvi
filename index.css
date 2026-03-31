@@ -116,6 +116,22 @@
       white-space: pre-wrap;
       word-break: break-word;
       color: #0f172a;
+      direction: rtl;
+      text-align: right;
+      unicode-bidi: embed;
+    }
+
+    .inline-lam-glyph {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 0;
+    }
+
+    .inline-lam-glyph svg {
+      
+      height: 1.1em;
+      transform: rotate(-4deg);
     }
 
     .placeholder-muted {
